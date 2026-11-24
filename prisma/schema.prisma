@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String @id @default(uuid())
+  name         String
+  email        String @unique
+  passwordHash String
+  photoUrl     String
+  tasks        Task[]
+  memberships  GroupMember[]
+  assignments  TaskAssignee[]
+}
+
+model Group {
+  id      String        @id @default(uuid())
+  name    String
+  members GroupMember[]
+  tasks   Task[]
+}
+
+model GroupMember {
+  groupId String
+  userId  String
+  group   Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, userId])
+  @@index([userId])
+}
+
+model Task {
+  id          String  @id @default(uuid())
+  title       String
+  description String?
+  completed   Boolean @default(false)
+  userId      String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  groupId     String?
+  group       Group?  @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  assignees   TaskAssignee[]
+
+  @@index([userId])
+  @@index([groupId])
+}
+
+model TaskAssignee {
+  taskId String
+  userId String
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, userId])
+  @@index([userId])
+}
