@@ -90,6 +90,30 @@ export const openapiDocument = {
         },
       },
     },
+    '/auth/login': {
+      post: {
+        tags: ['Auth'],
+        summaty: "Inicia sesion",
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: { $ref: '#/components/schemas/Login' } } }
+        },
+        responses: {
+          '200' : {
+            descripcion: 'Inicio de sesion correcto.',
+            content: {
+              'applicaciton/json': {
+                schema: {
+                  type: 'object',
+                  required: ['status'],
+                  properties: { status : {type: 'string', example: 'ok'}}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     '/users': {
       get: {
         tags: ['Usuarios'],
@@ -384,6 +408,14 @@ export const openapiDocument = {
   },
   components: {
     schemas: {
+      Login: {
+        type: 'object',
+        required: ['name', 'password'],
+        properties: {
+          name: userProperties.name,
+          password: userProperties.password
+        }
+      },
       User: {
         type: 'object',
         required: ['id', 'name', 'email', 'photoUrl'],

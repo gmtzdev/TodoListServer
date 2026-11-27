@@ -4,6 +4,7 @@ import { openapiDocument } from './openapi.ts';
 import { groupsRouter } from './routes/groups.ts';
 import { tasksRouter } from './routes/tasks.ts';
 import { usersRouter } from './routes/users.ts';
+import { authRouter } from './routes/auth.ts';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/users', usersRouter);
 app.use('/groups', groupsRouter);
 app.use('/tasks', tasksRouter);
+app.use('/auth', authRouter) 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiDocument));
 app.get('/openapi.json', (_req, res) => {
   res.json(openapiDocument);
